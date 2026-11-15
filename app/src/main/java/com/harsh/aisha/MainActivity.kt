@@ -311,14 +311,18 @@ private var conversationHistoryReady by mutableStateOf(false)
         super.onDestroy()
     }
 }
-
 @Composable
 private fun NishthaApp(
     speechStatus: String,
+    conversationHistory: List<ConversationMessage>,
+    conversationStatus: String,
+    conversationHistoryReady: Boolean,
+    onClearHistory: () -> Unit,
     onSpeak: (String) -> Unit,
     onListen: (onResult: (String) -> Unit) -> Unit,
     onSend: (String, (String, String) -> Unit) -> Unit
 ) {
+
     var selectedTab by remember { mutableStateOf("Home") }
     var selectedView by remember { mutableStateOf("Close-up") }
     var selectedModel by remember { mutableIntStateOf(1) }
