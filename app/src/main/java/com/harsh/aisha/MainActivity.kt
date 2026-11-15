@@ -120,7 +120,27 @@ private var conversationHistoryReady by mutableStateOf(false)
                         onRecognizedText = callback
                         requestOrStartListening()
                     },
-                    onSend = { input, onResult ->
+                    onSend = { input, onResult ->,
+                        conversationHistory = conversationHistory,
+conversationStatus = conversationStatus,
+conversationHistoryReady = conversationHistoryReady,
+
+onClearHistory = {
+    lifecycleScope.launch {
+        try {
+            withContext(Dispatchers.IO) {
+                conversationRepository.clearHistory()
+            }
+
+            conversationHistory = emptyList()
+            conversationStatus =
+                "All chat history deleted from this device."
+        } catch (_: Exception) {
+            conversationStatus =
+                "Could not clear conversation history."
+        }
+    }
+}
                         lifecycleScope.launch {
                             val answer = requestRouter.respond(input)
                             onResult(
