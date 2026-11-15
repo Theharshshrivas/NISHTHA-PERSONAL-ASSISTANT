@@ -479,61 +479,9 @@ modifier = Modifier.fillMaxWidth()
                     }
                 }
 
-                "Reminders" -> ReminderScreen(onSpeak = onSpeak)
-
-                "Avatar" -> {
-                    SectionTitle("AVATAR STUDIO")
-                    Text("Choose a model", color = Color.White, fontSize = 17.sp)
-                    Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
-                        (1..5).forEach { number ->
-                            FilterChip(
-                                selected = selectedModel == number,
-                                onClick = { selectedModel = number },
-                                label = { Text("Model $number", fontSize = 10.sp) }
-                            )
-                        }
-                    }
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(180.dp)
-                            .background(CardColor, RoundedCornerShape(24.dp)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text("N$selectedModel", fontSize = 76.sp, color = Purple)
-                    }
-                    SectionTitle("CAMERA VIEW")
-                    listOf("Close-up", "Half body", "Full body").forEach { view ->
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            RadioButton(
-                                selected = selectedView == view,
-                                onClick = { selectedView = view }
-                            )
-                            Text(view, color = Color.White)
-                        }
-                    }
-                    SectionTitle("OUTFIT")
-                    Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
-                        listOf("Casual", "Traditional", "Smart", "Comfy").forEach { outfit ->
-                            FilterChip(
-                                selected = selectedOutfit == outfit,
-                                onClick = { selectedOutfit = outfit },
-                                label = { Text(outfit, fontSize = 10.sp) }
-                            )
-                        }
-                    }
-                    Text(
-                        "Selected: Model $selectedModel • $selectedView • $selectedOutfit",
-                        color = Teal
-                    )
-                    Text(
-                        "Avatar controls are UI previews only. Real rigged 3D model and renderer are not connected yet.",
-                        color = Color.LightGray,
-                        fontSize = 12.sp
-                    )
-                }
-
-                "Memory" -> MemoryScreen()
+          "Reminders" -> ReminderScreen(onSpeak = onSpeak)                        
+          "Avatar" -> AvatarStudioScreen()
+           "Memory" -> MemoryScreen()
 
                 "Settings" -> {
                     SectionTitle("SETTINGS")
