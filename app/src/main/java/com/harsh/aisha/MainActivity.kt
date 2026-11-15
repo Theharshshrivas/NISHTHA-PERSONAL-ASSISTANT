@@ -114,47 +114,68 @@ private var conversationHistoryReady by mutableStateOf(false)
                 )
             ) {
                 NishthaApp(
-                    speechStatus = speechStatus,
-                    onSpeak = { speakText(it) },
-                    onListen = { callback ->
-                        onRecognizedText = callback
-                        requestOrStartListening()
-                    },
-                    onSend = { input, onResult ->,
-                        conversationHistory = conversationHistory,
-conversationStatus = conversationStatus,
-conversationHistoryReady = conversationHistoryReady,
+    speechStatus = speechStatus,
 
-onClearHistory = {
-    lifecycleScope.launch {
-        try {
-            withContext(Dispatchers.IO) {
-                conversationRepository.clearHistory()
+    onSpeak = { speakText(it) },
+
+    onListen = { callback ->
+        onRecognizedText = callback
+        requestOrStartListening()
+    },
+
+    conversationHistory = conversationHistory,
+    conversationStatus = conversationStatus,
+    conversationHistoryReady = conversationHistoryReady,
+
+    onClearHistory = {
+        lifecycleScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    conversationRepository.clearHistory()
+                }
+
+                conversationHistory = emptyList()
+                conversationStatus =
+                    "All chat history deleted from this device."
+
+            } catch (_: Exception) {
+                conversationStatus =
+                    "Could not clear conversation history."
+            }
+        }
+    },
+
+    onSend = { input, onResult ->
+        lifecycleScope.launch {
+
+            val answer = requestRouter.respond(input)
+
+            val sourceLabel = when (answer.source) {
+                ResponseSource.LOCAL_COMMANDS -> "LOCAL COMMAND"
+                ResponseSource.LOCAL_MODEL -> "ON-DEVICE AI"
+                ResponseSource.ONLINE_MODEL -> "ONLINE (APPROVED)"
+                ResponseSource.OFFLINE_FALLBACK -> "OFFLINE FALLBACK"
             }
 
-            conversationHistory = emptyList()
-            conversationStatus =
-                "All chat history deleted from this device."
-        } catch (_: Exception) {
-            conversationStatus =
-                "Could not clear conversation history."
+            try {
+                conversationHistory = withContext(Dispatchers.IO) {
+                    conversationRepository.save(input, answer.text)
+                    conversationRepository.getRecent(50)
+                }
+
+                conversationStatus =
+                    "Conversation encrypted and saved locally."
+
+            } catch (_: Exception) {
+                conversationStatus =
+                    "Reply generated, but history could not be saved."
+            }
+
+            onResult(answer.text, sourceLabel)
         }
     }
-}
-                        lifecycleScope.launch {
-                            val answer = requestRouter.respond(input)
-                            onResult(
-                                answer.text,
-                                when (answer.source) {
-                                    ResponseSource.LOCAL_COMMANDS -> "LOCAL COMMAND"
-                                    ResponseSource.LOCAL_MODEL -> "ON-DEVICE AI"
-                                    ResponseSource.ONLINE_MODEL -> "ONLINE (APPROVED)"
-                                    ResponseSource.OFFLINE_FALLBACK -> "OFFLINE FALLBACK"
-                                }
-                            )
-                        }
-                    }
-                )
+)
+                
             }
         }
     }
