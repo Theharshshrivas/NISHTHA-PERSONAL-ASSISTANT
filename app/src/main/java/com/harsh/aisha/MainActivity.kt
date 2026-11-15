@@ -464,10 +464,16 @@ private fun NishthaApp(
                                     }
                                     message = ""
                                 },
-                                enabled = !isSending,
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Text(if (isSending) "Processing locally..." else "Send & Speak")
+                                enabled = !isSending && conversationHistoryReady,
+modifier = Modifier.fillMaxWidth()
+) {
+    Text(
+        when {
+            !conversationHistoryReady -> "Loading history..."
+            isSending -> "Processing locally..."
+            else -> "Send & Speak"
+        }
+    )
                             }
                         }
                     }
