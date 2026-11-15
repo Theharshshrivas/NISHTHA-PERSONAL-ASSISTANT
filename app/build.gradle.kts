@@ -1,5 +1,6 @@
 
 plugins {
+    id("org.jetbrains.kotlin.kapt")
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
@@ -32,6 +33,11 @@ android {
 }
 
 dependencies {
+    val roomVersion = "2.8.5"
+
+implementation("androidx.room:room-runtime:$roomVersion")
+implementation("androidx.room:room-ktx:$roomVersion")
+kapt("androidx.room:room-compiler:$roomVersion")
     implementation(platform("androidx.compose:compose-bom:2024.12.01"))
     implementation("androidx.activity:activity-compose:1.9.3")
     implementation("androidx.core:core-ktx:1.15.0")
