@@ -1,5 +1,9 @@
 package com.harsh.aisha
 
+import com.harsh.aisha.database.ConversationMessage
+import com.harsh.aisha.database.ConversationRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -44,6 +48,19 @@ private val CardColor = Color(0xFF201A35)
 class MainActivity : ComponentActivity() {
 
     private var tts: TextToSpeech? = null
+    private val conversationRepository by lazy {
+    ConversationRepository(applicationContext)
+}
+
+private var conversationHistory by mutableStateOf(
+    emptyList<ConversationMessage>()
+)
+
+private var conversationStatus by mutableStateOf(
+    "Loading local conversation history..."
+)
+
+private var conversationHistoryReady by mutableStateOf(false)
     private var speechRecognizer: SpeechRecognizer? = null
     private var speechStatus by mutableStateOf("Ready")
     private var ttsReady = false
