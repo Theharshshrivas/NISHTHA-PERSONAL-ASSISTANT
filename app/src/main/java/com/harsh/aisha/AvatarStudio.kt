@@ -360,7 +360,7 @@ private class AvatarRenderView(
             buffer.flip()
 
             viewer.loadModelGlb(buffer)
-            viewer.autoPlayAnimations = true
+            animationStartTimeNanos = 0L
 
         } catch (error: Exception) {
             android.util.Log.e(
