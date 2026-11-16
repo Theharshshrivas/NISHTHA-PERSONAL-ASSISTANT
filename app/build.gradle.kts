@@ -34,7 +34,7 @@ android {
 
 dependencies {
     val roomVersion = "2.8.5"
-    val filamentVersion = "1.80.1"
+    val filamentVersion = "1.72.0"
 
     // Local database
     implementation("androidx.room:room-runtime:$roomVersion")
