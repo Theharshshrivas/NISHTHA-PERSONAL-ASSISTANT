@@ -346,9 +346,10 @@ private class AvatarRenderView(
             }
 
             val viewer = ModelViewer(
-                this,
-                uiHelper = helper
-            )
+    this,
+    uiHelper = helper,
+    manipulator = null
+)
 
             modelViewer = viewer
             setOnTouchListener(viewer)
