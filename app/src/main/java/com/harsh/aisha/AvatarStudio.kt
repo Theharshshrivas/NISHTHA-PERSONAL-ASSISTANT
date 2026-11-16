@@ -265,15 +265,39 @@ private class AvatarRenderView(
     private val choreographer = Choreographer.getInstance()
 
     private val frameCallback = object : Choreographer.FrameCallback {
-        override fun doFrame(frameTimeNanos: Long) {
-            val viewer = modelViewer ?: return
+    override fun doFrame(frameTimeNanos: Long) {
+        val viewer = modelViewer ?: return
 
-            viewer.render(frameTimeNanos)
+        viewer.animator?.let { animator ->
+            if (animator.animationCount > 0) {
+                if (animationStartTimeNanos == 0L) {
+                    animationStartTimeNanos = frameTimeNanos
+                }
 
-            if (frameRunning) {
-                choreographer.postFrameCallback(this)
+                val duration = animator.getAnimationDuration(0)
+
+                val elapsed = (
+                    (frameTimeNanos - animationStartTimeNanos) /
+                        1_000_000_000.0
+                    ).toFloat()
+
+                val animationTime = if (duration > 0f) {
+                    elapsed % duration
+                } else {
+                    elapsed
+                }
+
+                animator.applyAnimation(0, animationTime)
+                animator.updateBoneMatrices()
             }
         }
+
+        viewer.render(frameTimeNanos)
+
+        if (frameRunning) {
+            choreographer.postFrameCallback(this)
+        }
+    }
     }
 
     init {
