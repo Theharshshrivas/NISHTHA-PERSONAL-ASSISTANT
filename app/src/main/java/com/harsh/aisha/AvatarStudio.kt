@@ -1,6 +1,8 @@
 
 package com.harsh.aisha
 
+import com.google.android.filament.gltfio.Gltfio
+import com.google.android.filament.utils.Utils
 import android.content.Context
 import android.view.Choreographer
 import android.view.TextureView
@@ -42,7 +44,6 @@ private enum class NishthaAvatarMode(
         "Futuristic holographic projection"
     )
 }
-
 private object FilamentBootstrap {
     @Volatile
     private var initialized = false
@@ -51,10 +52,14 @@ private object FilamentBootstrap {
     fun initialize() {
         if (!initialized) {
             Filament.init()
+            Gltfio.init()
+            Utils.init()
+
             initialized = true
         }
     }
 }
+
 
 @Composable
 internal fun AvatarStudioScreen() {
