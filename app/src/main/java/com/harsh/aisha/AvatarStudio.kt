@@ -239,16 +239,18 @@ Row(
         ) {
             if (modelAvailable) {
                 AndroidView(
-                    modifier = Modifier.fillMaxSize(),
-                    factory = { viewContext ->
-                        AvatarRenderView(viewContext).apply {
-                            setAvatar("avatars/human.glb")
-                        }
-                    },
-                    update = { view ->
-                        view.setAvatar("avatars/human.glb")
-                    }
-                )
+    modifier = Modifier.fillMaxSize(),
+    factory = { viewContext ->
+        AvatarRenderView(viewContext).apply {
+            setAvatar("avatars/human.glb")
+            setCameraAngle(cameraAngle)
+        }
+    },
+    update = { view ->
+        view.setAvatar("avatars/human.glb")
+        view.setCameraAngle(cameraAngle)
+    }
+)
             } else {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -298,6 +300,9 @@ private class AvatarRenderView(
     context: Context
 ) : TextureView(context) {
 
+    private var activePath: String? = null
+    private var currentCameraAngle =
+    AvatarCameraAngle.FULL_BODY
     private var modelViewer: ModelViewer? = null
     private var activePath: String? = null
     private var frameRunning = false
@@ -352,10 +357,21 @@ private class AvatarRenderView(
         modelViewer?.let { loadModel(it, path) }
     }
 fun setCameraAngle(angle: AvatarCameraAngle) {
+    currentCameraAngle = angle
+    applyCameraAngle()
+}
+
+private fun applyCameraAngle() {
     modelViewer?.camera?.lookAt(
-        0.0, angle.targetY, angle.eyeZ,
-        0.0, angle.targetY, -4.0,
-        0.0, 1.0, 0.0
+        0.0,
+        currentCameraAngle.targetY,
+        currentCameraAngle.eyeZ,
+        0.0,
+        currentCameraAngle.targetY,
+        -4.0,
+        0.0,
+        1.0,
+        0.0
     )
 }
     override fun onAttachedToWindow() {
@@ -433,6 +449,7 @@ fun setCameraAngle(angle: AvatarCameraAngle) {
 
             viewer.loadModelGlb(buffer)
 viewer.transformToUnitCube()
+applyCameraAngle()
 animationStartTimeNanos = 0L
 
         } catch (error: Exception) {
