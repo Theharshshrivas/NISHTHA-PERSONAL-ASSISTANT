@@ -35,6 +35,17 @@ private enum class NishthaAvatarMode(
     val title: String,
     val description: String
 ) {
+    
+private enum class AvatarCameraAngle(
+    val title: String,
+    val targetY: Double,
+    val eyeZ: Double
+) {
+    FULL_BODY("Full Body", 0.0, -1.4),
+    BODY_ZOOM("Body Zoom", 0.25, -2.0),
+    UPPER_BODY("Upper Body", 0.65, -2.2)
+}
+
     HUMAN(
         "Human",
         "Realistic female digital human"
@@ -64,6 +75,10 @@ private object FilamentBootstrap {
 @Composable
 internal fun AvatarStudioScreen() {
     var mode by remember {
+var cameraAngle by remember {
+    mutableStateOf(AvatarCameraAngle.FULL_BODY)
+}
+
         mutableStateOf(NishthaAvatarMode.HUMAN)
     }
 
