@@ -390,7 +390,8 @@ private class AvatarRenderView(
             buffer.flip()
 
             viewer.loadModelGlb(buffer)
-            animationStartTimeNanos = 0L
+viewer.transformToUnitCube()
+animationStartTimeNanos = 0L
 
         } catch (error: Exception) {
             android.util.Log.e(
