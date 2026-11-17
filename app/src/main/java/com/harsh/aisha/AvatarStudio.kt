@@ -51,9 +51,9 @@ private enum class AvatarCameraAngle(
     val targetY: Double,
     val eyeZ: Double
 ) {
-    FULL_BODY("Full Body", 0.0, -1.4),
-    BODY_ZOOM("Body Zoom", 0.25, -2.0),
-    UPPER_BODY("Upper Body", 0.65, -2.2)
+    FULL_BODY("Full Body", 0.0, -0.0),
+    BODY_ZOOM("Body Zoom", 0.25, -1.0),
+    UPPER_BODY("Upper Body", 0.64, -2.0)
 }
 
 private object FilamentBootstrap {
@@ -351,7 +351,13 @@ private class AvatarRenderView(
         activePath = path
         modelViewer?.let { loadModel(it, path) }
     }
-
+fun setCameraAngle(angle: AvatarCameraAngle) {
+    modelViewer?.camera?.lookAt(
+        0.0, angle.targetY, angle.eyeZ,
+        0.0, angle.targetY, -4.0,
+        0.0, 1.0, 0.0
+    )
+}
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         post { initializeViewer() }
