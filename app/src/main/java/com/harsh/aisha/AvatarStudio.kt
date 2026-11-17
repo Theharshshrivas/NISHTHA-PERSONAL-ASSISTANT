@@ -31,11 +31,21 @@ import com.google.android.filament.android.UiHelper
 import com.google.android.filament.utils.ModelViewer
 import java.nio.ByteBuffer
 
+
 private enum class NishthaAvatarMode(
     val title: String,
     val description: String
 ) {
-    
+    HUMAN(
+        "Human",
+        "Realistic female digital human"
+    ),
+    HOLOGRAM(
+        "Holographic",
+        "Futuristic holographic projection"
+    )
+}
+
 private enum class AvatarCameraAngle(
     val title: String,
     val targetY: Double,
@@ -46,15 +56,6 @@ private enum class AvatarCameraAngle(
     UPPER_BODY("Upper Body", 0.65, -2.2)
 }
 
-    HUMAN(
-        "Human",
-        "Realistic female digital human"
-    ),
-    HOLOGRAM(
-        "Holographic",
-        "Futuristic holographic projection"
-    )
-}
 private object FilamentBootstrap {
     @Volatile
     private var initialized = false
@@ -74,13 +75,15 @@ private object FilamentBootstrap {
 
 @Composable
 internal fun AvatarStudioScreen() {
-    var mode by remember {
+    
+var mode by remember {
+    mutableStateOf(NishthaAvatarMode.HUMAN)
+}
+
 var cameraAngle by remember {
     mutableStateOf(AvatarCameraAngle.FULL_BODY)
 }
 
-        mutableStateOf(NishthaAvatarMode.HUMAN)
-    }
 
     val context = androidx.compose.ui.platform.LocalContext.current
 
@@ -128,6 +131,24 @@ var cameraAngle by remember {
                 )
             }
         }
+        
+Row(
+    modifier = Modifier.fillMaxWidth(),
+    horizontalArrangement = Arrangement.spacedBy(8.dp)
+) {
+    AvatarCameraAngle.entries.forEach { angle ->
+        FilterChip(
+            selected = cameraAngle == angle,
+            onClick = {
+                cameraAngle = angle
+            },
+            label = {
+                Text(angle.title)
+            }
+        )
+    }
+}
+
 
         Text(
             mode.description,
