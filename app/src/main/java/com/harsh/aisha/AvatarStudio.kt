@@ -301,11 +301,10 @@ private class AvatarRenderView(
 ) : TextureView(context) {
 
     private var activePath: String? = null
-    private var currentCameraAngle =
+private var currentCameraAngle =
     AvatarCameraAngle.FULL_BODY
-    private var modelViewer: ModelViewer? = null
-    private var activePath: String? = null
-    private var frameRunning = false
+private var modelViewer: ModelViewer? = null
+private var frameRunning = false
     private var animationStartTimeNanos = 0L
 
     private val choreographer = Choreographer.getInstance()
